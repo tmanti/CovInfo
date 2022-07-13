@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="covinfo" target="17" />
+      <module name="covinfo.main" target="17" />
+      <module name="covinfo.test" target="17" />
+      <module name="cp317-backend" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
