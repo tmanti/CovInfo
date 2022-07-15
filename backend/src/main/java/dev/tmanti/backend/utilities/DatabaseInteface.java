@@ -23,6 +23,24 @@ public class DatabaseInteface {
 
     private Connection dbconnection = null;
 
+    private final String createUsersTableSQL = "CREATE TABLE IF NOT EXISTS users (" +
+            "id INT NOT NULL, " +
+            "username VARCHAR(50) NOT NULL, " +
+            "passwordhash TEXT NOT NULL, " +
+            "privilege INT NOT NULL DEFAULT '0', " +
+            "PRIMARY KEY (id)" +
+        ")";
+
+    private final String createResourcesTableSQL = "CREATE TABLE IF NOT EXISTS resources (" +
+            "id INT NOT NULL, " +
+            "name VARCHAR(50) NOT NULL, " +
+            "type INT NOT NULL, " +
+            "location TEXT, " +
+            "event_date DATE, " +
+            "comment TEXT, " +
+            "PRIMARY KEY (id)" +
+        ")";
+
     private void init(){
         try{
             dbconnection = DriverManager.getConnection(url, user, password);
@@ -37,27 +55,11 @@ public class DatabaseInteface {
         }
 
         try{
-            Statement userstatement = dbconnection.createStatement();
-            String createUsersTableSQL = "CREATE TABLE IF NOT EXISTS users (" +
-                    "id INT NOT NULL, " +
-                    "username VARCHAR(50) NOT NULL, " +
-                    "passwordhash TEXT NOT NULL, " +
-                    "privilege INT NOT NULL DEFAULT '0', " +
-                    "PRIMARY KEY (id)" +
-                ")";
-            userstatement.execute(createUsersTableSQL);
+            Statement userStatement = dbconnection.createStatement();
+            userStatement.execute(createUsersTableSQL);
 
-            Statement resstatement = dbconnection.createStatement();
-            String createResourcesTableSQL = "CREATE TABLE IF NOT EXISTS resources (" +
-                    "id INT NOT NULL, " +
-                    "name VARCHAR(50) NOT NULL, " +
-                    "type INT NOT NULL, " +
-                    "location TEXT, " +
-                    "event_date DATE, " +
-                    "comment TEXT, " +
-                    "PRIMARY KEY (id)" +
-                ")";
-            resstatement.execute(createResourcesTableSQL);
+            Statement resStatement = dbconnection.createStatement();
+            resStatement.execute(createResourcesTableSQL);
         } catch (SQLException e){
             printSQLException(e);
         }
