@@ -1,30 +1,33 @@
 package dev.tmanti.backend.utilities;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Resource {
 
-    private int id;
+    private UUID id;
     private String name;
     private ResourceType type;
-    private String location;
-    private LocalDate event_date;
-    private String comment;
+    private String location = null;
+    private LocalDate date = null;
+    private String comment = null;
 
-    public Resource(int id, String name, ResourceType type, String location, LocalDate date, String comment){
+    public Resource(){}
+
+    public Resource(UUID id, String name, ResourceType type, String location, LocalDate date, String comment){
         this.id = id;
         this.name = name;
         this.type = type;
         this.location = location;
-        this.event_date = date;
+        this.date = date;
         this.comment = comment;
     }
 
-    public int getId(){
+    public UUID getId(){
         return this.id;
     }
 
-    public void setId(int id){
+    public void setId(UUID id){
         this.id = id;
     }
 
@@ -53,11 +56,11 @@ public class Resource {
     }
 
     public LocalDate getDate() {
-        return event_date;
+        return date;
     }
 
     public void setDate(LocalDate date) {
-        this.event_date = date;
+        this.date = date;
     }
 
     public String getComment() {
