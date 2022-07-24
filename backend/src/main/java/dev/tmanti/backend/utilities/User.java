@@ -49,7 +49,4 @@ public class User {
         this.passwordhash = passwordhash;
     }
 
-    public boolean ValidatePassword(String password){
-        throw new NotImplementedException();
-    }
 }

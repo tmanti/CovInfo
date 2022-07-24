@@ -43,7 +43,28 @@ public class ResourcesController {
         ArrayList<Resource> resources =  db.GetResources(type);
 
         //find closest
+        double min = 1e9;
+        Resource closest = null;
+        for(int i = 0; i<resources.size(); i++){
+            Resource r = resources.get(i);
+            double dist = location_dist(Location, r.getLocation());
+            if(dist < min){
+                min = dist;
+                closest = r;
+            }
+        }
 
-        throw new NotImplementedException();
+        return closest;
+    }
+
+    private double location_dist(String loc1, String loc2){
+        double x1, y1, x2, y2;
+        String[] a = loc1.split(":");
+        x1 = Double.parseDouble(a[0]);
+        y1 = Double.parseDouble(a[1]);
+        String[] b = loc2.split(":");
+        x2 = Double.parseDouble(b[0]);
+        y2 = Double.parseDouble(b[1]);
+        return Math.sqrt(Math.pow((x2-x1), 2) + Math.pow((y2-y1), 2));
     }
 }

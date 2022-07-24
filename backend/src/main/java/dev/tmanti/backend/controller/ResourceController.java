@@ -1,5 +1,6 @@
 package dev.tmanti.backend.controller;
 
+import dev.tmanti.backend.utilities.CryptoUtils;
 import dev.tmanti.backend.utilities.DatabaseInteface;
 import dev.tmanti.backend.utilities.Resource;
 import org.springframework.http.HttpStatus;
@@ -33,66 +34,63 @@ public class ResourceController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code=HttpStatus.OK)
-    public void AddResource(HttpServletRequest req, @PathVariable String id, @RequestBody Resource new_resource){
-        //AUTHENTICATE
-        //GRAB TOKEN FROM HEADER
-        //DECODE TOKEN AND GET UUID
-        //GET USER FROM DB
-        //CHECK THAT PRIVILEGE LEVEL IN TOKEN MATCHES FROM DB
-        //THEN PROCEED
-        //CAN DO IN JWT FUNCTION
-        //JUST RETURN BOOLEAN HERE c:
+    public void UpdateResource(@RequestHeader("authorization") String token, @PathVariable String id, @RequestBody Resource new_resource){
+        if(token != null) {
+            if(CryptoUtils.authorizeJWT(token) == 1) {
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString(id);
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ID");
+                }
 
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch(IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ID");
+                new_resource.setId(uuid);
+
+                DatabaseInteface db = DatabaseInteface.getInstance();
+                db.UpdateResource(new_resource);
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No Authorization Token");
         }
-
-        new_resource.setId(uuid);
-
-        DatabaseInteface db = DatabaseInteface.getInstance();
-        db.UpdateResource(new_resource);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code=HttpStatus.OK)
-    public void AddResource(HttpServletRequest req, @PathVariable String id){
-        //AUTHENTICATE
-        //GRAB TOKEN FROM HEADER
-        //DECODE TOKEN AND GET UUID
-        //GET USER FROM DB
-        //CHECK THAT PRIVILEGE LEVEL IN TOKEN MATCHES FROM DB
-        //THEN PROCEED
-        //CAN DO IN JWT FUNCTION
-        //JUST RETURN BOOLEAN HERE c:
+    public void DeleteResource(@RequestHeader("authorization") String token, @PathVariable String id){
+        if(token != null) {
+            if(CryptoUtils.authorizeJWT(token) == 1) {
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString(id);
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ID");
+                }
 
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch(IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ID");
+                DatabaseInteface db = DatabaseInteface.getInstance();
+                db.DeleteResource(uuid);
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No Authorization Token");
         }
-
-        DatabaseInteface db = DatabaseInteface.getInstance();
-        db.DeleteResource(uuid);
     }
 
     @PostMapping("/add")
     @ResponseStatus(code=HttpStatus.OK)
-    public void AddResource(HttpServletRequest req, @RequestBody Resource new_resource){
-        //AUTHENTICATE
-        //GRAB TOKEN FROM HEADER
-        //DECODE TOKEN AND GET UUID
-        //GET USER FROM DB
-        //CHECK THAT PRIVILEGE LEVEL IN TOKEN MATCHES FROM DB
-        //THEN PROCEED
-        //CAN DO IN JWT FUNCTION
-        //JUST RETURN BOOLEAN HERE c:
-
-        DatabaseInteface db = DatabaseInteface.getInstance();
-        db.AddResource(new_resource);
+    public void AddResource(@RequestHeader("authorization") String token, @RequestBody Resource new_resource){
+        if(token != null) {
+            if(CryptoUtils.authorizeJWT(token) == 1) {
+                DatabaseInteface db = DatabaseInteface.getInstance();
+                db.AddResource(new_resource);
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No Authorization Token");
+        }
     }
 
 }

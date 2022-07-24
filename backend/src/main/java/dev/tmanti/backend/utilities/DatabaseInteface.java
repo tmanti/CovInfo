@@ -311,13 +311,14 @@ public class DatabaseInteface {
 
             ResultSet rs = statement.executeQuery();
 
-            if(rs.next()) {
+            while(rs.next()) {
                 user = new User(
                         UUID.fromString(rs.getString("id")),
                         rs.getString("username"),
                         rs.getString("passwordhash"),
                         rs.getInt("privilege")
                 );
+                if(user.getUsername().equals(username)) break;
             }
         } catch (SQLException e){
             printSQLException(e);
