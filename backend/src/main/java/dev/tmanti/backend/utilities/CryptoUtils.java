@@ -70,6 +70,7 @@ public class CryptoUtils {
         Algorithm algo = Algorithm.HMAC256(jwt_secret_key);
 
         Map<String, Object> claims = new HashMap<>();
+        //System.out.println("ID: " + id.toString());
         claims.put("id", id.toString());
         claims.put("priv", priv);
 
@@ -84,13 +85,15 @@ public class CryptoUtils {
         int auth = -1;
 
         try{
+            //System.out.println("Token: "+ token);
             Algorithm algo = Algorithm.HMAC256(jwt_secret_key);
             JWTVerifier verifier = JWT.require(algo)
                     .build();
             DecodedJWT jwt = verifier.verify(token);
             Map<String, Claim> claims = jwt.getClaims();
             Claim id_claim = claims.get("id");
-            UUID id = UUID.fromString(id_claim.toString());
+            String id_str = id_claim.asString();
+            UUID id = UUID.fromString(id_str);
             Claim priv_claim = claims.get("priv");
             int priv = priv_claim.asInt();
 

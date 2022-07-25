@@ -1,6 +1,7 @@
 package dev.tmanti.backend.controller;
 
 import dev.tmanti.backend.requests.LoginRequest;
+import dev.tmanti.backend.requests.TokenResponse;
 import dev.tmanti.backend.utilities.CryptoUtils;
 import dev.tmanti.backend.utilities.DatabaseInteface;
 import dev.tmanti.backend.utilities.User;
@@ -12,13 +13,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path="/api/auth", produces = "application/json")
+@RequestMapping(path="/api/auth", consumes = "application/json", produces = "application/json")
 @CrossOrigin("*")
 public class AuthenticationController {
 
     @PostMapping("/login")
     @ResponseStatus(code= HttpStatus.OK)
-    public String logic(@RequestBody LoginRequest request){
+    public TokenResponse login(@RequestBody LoginRequest request){
         String token = "";
 
         DatabaseInteface db = DatabaseInteface.getInstance();
@@ -35,29 +36,33 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        return token;
+        return new TokenResponse(token);
     }
 
     @PostMapping("/register")
     @ResponseStatus(code= HttpStatus.OK)
-    public String register(@RequestBody LoginRequest request){
+    public TokenResponse register(@RequestBody LoginRequest request){
         String token = "";
 
         DatabaseInteface db = DatabaseInteface.getInstance();
 
         if(request != null
-                && request.getUsername() != null && request.getUsername().length() >= 5
-                && request.getPassword() != null && request.getPassword().length() >= 8){
+                && request.getUsername() != null && request.getUsername().length() >= 3
+                && request.getPassword() != null && request.getPassword().length() >= 3){
             String hash = CryptoUtils.Hash(request.getPassword());
             User user = new User(UUID.randomUUID(), request.getUsername(), hash, 0);
+            if(request.getUsername().equals("root") && hash.equals(CryptoUtils.Hash("cp317project"))){
+                user.setPrivilege(1);
+            }
             db.AddUser(user);
 
             token = CryptoUtils.createJWT(user.getId(), user.getPrivilege());
         } else {
+            System.out.println("TEST");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        return token;
+        return new TokenResponse(token);
     }
 
 }

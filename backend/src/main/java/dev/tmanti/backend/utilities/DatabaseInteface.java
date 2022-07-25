@@ -35,7 +35,7 @@ public class DatabaseInteface {
     private final String CREATE_RESOURCES_TABLE = "CREATE TABLE IF NOT EXISTS resources (" +
             "id TEXT NOT NULL, " +
             "name VARCHAR(50) NOT NULL, " +
-            "type INT NOT NULL, " +
+            "type VARCHAR(1) NOT NULL, " +
             "location TEXT, " +
             "date DATE, " +
             "comment TEXT, " +
@@ -80,7 +80,7 @@ public class DatabaseInteface {
         this.init();
     }
 
-    public void AddResource(Resource res){
+    public int AddResource(Resource res){
         String INSERT_RESOURCE = "INSERT INTO resources "+
                 "(id, name, type, location, date, comment) VALUES " +
                 "(?, ?, ?, ?, ?, ?);";
@@ -89,15 +89,18 @@ public class DatabaseInteface {
             PreparedStatement statement = dbconnection.prepareStatement(INSERT_RESOURCE);
             statement.setString(1, res.getId().toString());
             statement.setString(2, res.getName());
-            statement.setString(3, res.getType().toString());
+            statement.setString(3, res.getType());
             statement.setString(4, res.getLocation());
-            statement.setDate(5, Date.valueOf(res.getDate()));
+            Date date = (res.getDate()!=null)?Date.valueOf(res.getDate()):Date.valueOf(LocalDate.now());
+            statement.setDate(5, date);
             statement.setString(6, res.getComment());
 
             statement.executeUpdate();
         } catch(SQLException e){
             printSQLException(e);
+            return -1;
         }
+        return 0;
     }
 
     public void UpdateResource(Resource res){
@@ -155,7 +158,7 @@ public class DatabaseInteface {
                 res.setId(UUID.fromString(rs.getString("id")));
 
                 res.setName(rs.getString("name"));
-                res.setType(ResourceType.valueOf(rs.getString("type")));
+                res.setType(rs.getString("type"));
                 res.setLocation(rs.getString("location"));
 
                 Date d = rs.getDate("date");
@@ -187,7 +190,7 @@ public class DatabaseInteface {
                 res.setId(UUID.fromString(rs.getString("id")));
 
                 res.setName(rs.getString("name"));
-                res.setType(ResourceType.valueOf(rs.getString("type")));
+                res.setType(rs.getString("type"));
                 res.setLocation(rs.getString("location"));
 
                 Date d = rs.getDate("date");
@@ -222,7 +225,7 @@ public class DatabaseInteface {
                 res.setId(UUID.fromString(rs.getString("id")));
 
                 res.setName(rs.getString("name"));
-                res.setType(ResourceType.valueOf(rs.getString("type")));
+                res.setType(rs.getString("type"));
                 res.setLocation(rs.getString("location"));
 
                 Date d = rs.getDate("date");
@@ -257,7 +260,7 @@ public class DatabaseInteface {
                 res.setId(UUID.fromString(rs.getString("id")));
 
                 res.setName(rs.getString("name"));
-                res.setType(ResourceType.valueOf(rs.getString("type")));
+                res.setType(rs.getString("type"));
                 res.setLocation(rs.getString("location"));
 
                 Date d = rs.getDate("date");
@@ -277,7 +280,7 @@ public class DatabaseInteface {
     }
 
     public User GetUser(UUID id){
-        String GET_USER = "SELECT id,username,passwordhash,location,date,comment FROM users WHERE id = ?;";
+        String GET_USER = "SELECT id,username,passwordhash,privilege FROM users WHERE id = ?;";
         User user = null;
 
         try{
@@ -302,7 +305,7 @@ public class DatabaseInteface {
     }
 
     public User GetUser(String username){
-        String GET_USER = "SELECT id,username,passwordhash,location,date,comment FROM users WHERE username = ?;";
+        String GET_USER = "SELECT id,username,passwordhash,privilege FROM users WHERE username = ?;";
         User user = null;
 
         try{

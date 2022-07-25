@@ -34,7 +34,7 @@ public class ResourceController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code=HttpStatus.OK)
-    public void UpdateResource(@RequestHeader("authorization") String token, @PathVariable String id, @RequestBody Resource new_resource){
+    public void UpdateResource(@RequestHeader("Authorization") String token, @PathVariable String id, @RequestBody Resource new_resource){
         if(token != null) {
             if(CryptoUtils.authorizeJWT(token) == 1) {
                 UUID uuid;
@@ -58,7 +58,7 @@ public class ResourceController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code=HttpStatus.OK)
-    public void DeleteResource(@RequestHeader("authorization") String token, @PathVariable String id){
+    public void DeleteResource(@RequestHeader("Authorization") String token, @PathVariable String id){
         if(token != null) {
             if(CryptoUtils.authorizeJWT(token) == 1) {
                 UUID uuid;
@@ -80,11 +80,15 @@ public class ResourceController {
 
     @PostMapping("/add")
     @ResponseStatus(code=HttpStatus.OK)
-    public void AddResource(@RequestHeader("authorization") String token, @RequestBody Resource new_resource){
+    public void AddResource(@RequestHeader("Authorization") String token, @RequestBody Resource new_resource){
         if(token != null) {
+            //System.out.println("Token: " + token);
             if(CryptoUtils.authorizeJWT(token) == 1) {
                 DatabaseInteface db = DatabaseInteface.getInstance();
-                db.AddResource(new_resource);
+                new_resource.setId(UUID.randomUUID());
+                if(db.AddResource(new_resource)==-1){
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                }
             } else {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }

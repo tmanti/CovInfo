@@ -1,7 +1,12 @@
 package dev.tmanti.backend.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LoginRequest {
+    @JsonProperty("username")
     String username;
+
+    @JsonProperty("password")
     String password;
 
     public LoginRequest(String uname, String pass){

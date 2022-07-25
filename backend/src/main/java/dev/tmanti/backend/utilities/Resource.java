@@ -1,20 +1,33 @@
 package dev.tmanti.backend.utilities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
 public class Resource {
 
+    @JsonProperty("id")
     private UUID id;
+
+    @JsonProperty("name")
     private String name;
-    private ResourceType type;
+
+    @JsonProperty("type")
+    private String type;
+
+    @JsonProperty("location")
     private String location = null;
+
+    @JsonProperty("date")
     private LocalDate date = null;
+
+    @JsonProperty("comment")
     private String comment = null;
 
     public Resource(){}
 
-    public Resource(UUID id, String name, ResourceType type, String location, LocalDate date, String comment){
+    public Resource(UUID id, String name, String type, String location, LocalDate date, String comment){
         this.id = id;
         this.name = name;
         this.type = type;
@@ -39,11 +52,11 @@ public class Resource {
         this.name = name;
     }
 
-    public ResourceType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(ResourceType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
