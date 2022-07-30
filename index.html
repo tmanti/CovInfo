@@ -1,0 +1,92 @@
+<?php
+
+       $error = '';
+
+       require('connect.php');
+
+       $username = @$_POST['username'];
+       $password = @$_POST['password'];
+
+   if(isset($_POST['submit']))
+   {
+   if($username && $password)
+   {
+           $check = mysql_query("SELECT * FROM users WHERE username='".$username."' AND password= '".$password."'");
+           $rows = mysql_num_rows($check);
+
+
+         if(mysql_num_rows($check)!=0)
+         {
+             header("location: /main.php");
+             exit();
+         }
+         else
+         {
+            $error = "Couldn't find username.";
+
+         }
+      }
+      else
+      {
+         echo "Please fill all the fields.";
+      }
+   }
+ ?>
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+  <script type="text/javascript" src = "C:\Users\jwcc9\CP317\test1\src\main\webapp\index.js" defer></script>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+<!-- partial:index.partial.html -->
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+    <button class="btn sign_in_btn active"> Sign In </button>
+    <button class="btn sign_up_btn">Sign Up </button>
+
+    <!-- Login Form -->
+  <div class="login_form">
+    <form action="/auth" method="post" accept-charset="UTF-8">
+      <div>
+        <fieldset class="form_fields_L required">
+          <input type="text" id="ID" class="fadeIn second" name="login" placeholder="login">
+          <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
+      <input type="submit" class="fadeIn fourth" name = "Login" value="Log In">
+    </fieldset>
+    </form>
+  </div>
+</div>
+
+<!-- Register Form -->
+<div class="register_form">
+  <form action="/auth" method="post" accept-charset="UTF-8">
+    <div>
+      <fieldset class="form_fields_R required">
+        <input type="text" id="first_name" class="fadeIn second" name="first_name" placeholder="First Name">
+        <input type="text" id="last_name" class="fadeIn second" name="last_name" placeholder="Last Name">
+        <input type="text" id="email" class="fadeIn second" name="email" placeholder="Email">
+        <input type="text" id="password" class="fadeIn third" name="login" placeholder="Password">
+    <input type="submit" class="fadeIn fourth" name ="Register" value="Register">
+  </fieldset>
+  </form>
+</div>
+</div>
+
+
+    <!-- Remind Passowrd -->
+    <div id="formFooter">
+      <a class="underlineHover" href="#">Forgot Password?</a>
+    </div>
+
+  </div>
+</div>
+<!-- partial -->
+
+</body>
+</html>
